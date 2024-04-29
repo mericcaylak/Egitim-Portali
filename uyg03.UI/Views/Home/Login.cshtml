@@ -1,0 +1,143 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    .ortala {
+        margin-top:150px
+    }
+
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oturum Aç</title>
+    <style>
+        
+
+        .login-container {
+            margin-top: 130px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            width: 350px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center mb-0">Giriş Yap</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="txtUserName">Kullanıcı Adı</label>
+                    <input type="text" class="form-control" id="txtUserName" />
+                </div>
+                <div class="form-group">
+                    <label for="txtPassword">Parola</label>
+                    <input type="password" class="form-control" id="txtPassword" />
+                </div>
+                <button class="btn btn-primary" id="btnLogin">Giriş Yap</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            var ApiBaseUrl = "@ViewBag.ApiBaseUrl";
+
+            $("#btnLogin").click(function () {
+                var userName = $("#txtUserName").val();
+                var password = $("#txtPassword").val();
+                var loginData = new Object();
+                loginData.UserName = userName;
+                loginData.Password = password;
+
+                $.ajax({
+                    url: ApiBaseUrl + "User/SignIn",
+                    method: "POST",
+                    data: JSON.stringify(loginData),
+                    contentType: "application/json",
+                    success: function (data) {
+                        if (data.status) {
+                            localStorage.setItem("token", data.message);
+                            location.href = "/";
+                        } else {
+                            $("#result")
+                                .show()
+                                .removeClass()
+                                .addClass("alert alert-danger")
+                                .html(data.message)
+                                .fadeOut(3000);
+
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
+
+
+            });
+
+
+
+
+        });
+    </script>
+}
+
+
+
+
